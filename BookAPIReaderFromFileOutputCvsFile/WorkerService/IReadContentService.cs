@@ -24,14 +24,20 @@ namespace WorkerService
         {
             _logger.LogInformation($"Start to Read file content: {fileName}");
             StreamReader sStreamReader = new StreamReader($"{inputFile}");
-            string AllData = sStreamReader.ReadToEnd();
-            string[] rows = AllData.Split(",".ToCharArray());
+            // string AllData = sStreamReader.ReadToEnd();
+            //string[] rows;// =; AllData.Split(",".ToCharArray());
+            string[] lines = File.ReadAllLines(inputFile);
+            List<string> rows = new List<string>();
+            foreach (string line in lines)
+            {
+                rows.AddRange(line.Split(','));
+            }
             _logger.LogInformation("End of Read file content");
             var existingBooks = BookContext.Instance.Books;
             var books = new List<Book>();
             foreach (string row in rows)
             {
-                Book book ;
+                Book book;
                 var exist = existingBooks.Any(p => p.Isbn == row);
                 if (exist)
                 {
